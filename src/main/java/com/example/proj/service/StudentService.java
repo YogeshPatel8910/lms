@@ -51,6 +51,7 @@ public class StudentService implements UserService{
         studentDTO.setPassword(student.getPassword());
         studentDTO.setRole(student.getRole());
         studentDTO.setEnrollmentDate(student.getEnrollmentDate());
+        studentDTO.setCourseId(student.getCourse().stream().map(Course::getId).toList());
         return studentDTO;
     }
 

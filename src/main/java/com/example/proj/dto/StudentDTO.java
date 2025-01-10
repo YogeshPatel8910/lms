@@ -16,11 +16,11 @@ public class StudentDTO extends UserDTO {
 
         private Date enrollmentDate;
 
-        private List<Course> courseId;
+        private List<Long> courseId;
 
-        private List<Assignment> assignmentId;
+        private List<Long> assignmentId;
 
-        private List<Submission> submissionId;
+        private List<Long> submissionId;
 
-        private List<Result> resultId;
+        private List<Long> resultId;
 }

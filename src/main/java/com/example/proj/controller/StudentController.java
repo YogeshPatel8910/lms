@@ -42,6 +42,13 @@ public class StudentController {
         return new ResponseEntity<>(studentService.getStudentById(id),HttpStatus.OK);
     }
 
+//  student --- update
+    @PutMapping("/{id}")
+    public ResponseEntity<StudentDTO> updateStudent(@PathVariable(name = "id") long id,
+                                                    @RequestBody StudentDTO studentDTO){
+        return new ResponseEntity<>(studentService.updateStudent(id,studentDTO), HttpStatus.OK);
+    }
+
 //  course -- getAll
     @GetMapping("/{id}/courses")
     public ResponseEntity<Page<CourseDTO>> getAllCourse(@PathVariable(name = "id") long id,
@@ -61,18 +68,12 @@ public class StudentController {
         return new ResponseEntity<>(courseService.getAllCourse(page, size, sortBy, direction), HttpStatus.OK);
     }
 
+//  student -- enroll
     @Transactional
     @PostMapping("/{studentId}/enroll/{id}")
     public ResponseEntity<StudentDTO> enrollCourse(@PathVariable(name = "studentId") long studentId,
                                                     @PathVariable(name = "id") long id){
         return new ResponseEntity<>(studentService.enrollCourse(studentId,id),HttpStatus.OK);
-    }
-
-//  student --- update
-    @PutMapping("/{id}")
-    public ResponseEntity<StudentDTO> updateStudent(@PathVariable(name = "id") long id,
-                                                    @RequestBody StudentDTO studentDTO){
-        return new ResponseEntity<>(studentService.updateStudent(id,studentDTO), HttpStatus.OK);
     }
 
 }

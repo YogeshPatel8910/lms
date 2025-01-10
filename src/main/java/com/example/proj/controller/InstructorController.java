@@ -216,7 +216,7 @@ public class InstructorController {
         return new ResponseEntity<>(submissionService.getAllSubmissionByAssignment(id,page,size,sortBy,direction), HttpStatus.OK);
     }
 
-//  assignment -- update
+//  submission -- update
     @PutMapping("/{instructor_id}/course/{courseId}/assignment/{assignmentId}/submissions/{id}")
     public ResponseEntity<Optional<SubmissionDTO>> updateAssignment(@PathVariable(name = "id") long id, @RequestBody SubmissionDTO submissionDTO) {
         Optional<SubmissionDTO> updateSubmission = submissionService.updateSubmission(id, submissionDTO);
