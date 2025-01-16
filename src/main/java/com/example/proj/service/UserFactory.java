@@ -1,6 +1,5 @@
 package com.example.proj.service;
 
-import com.example.proj.dto.UserDTO;
 import com.example.proj.model.ERole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

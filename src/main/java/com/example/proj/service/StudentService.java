@@ -1,22 +1,17 @@
 package com.example.proj.service;
 
-import com.example.proj.controller.StudentController;
 import com.example.proj.dto.StudentDTO;
 import com.example.proj.dto.UserDTO;
 import com.example.proj.model.*;
 import com.example.proj.repositry.StudentRepositry;
+import com.example.proj.utils.GenericObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.hateoas.PagedModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -32,33 +27,10 @@ public class StudentService implements UserService{
 
     @Override
     public UserDTO createUser(UserDTO userDTO) {
-        Student student = new Student();
         StudentDTO studentDTO = (StudentDTO) userDTO;
-        student.setName(studentDTO.getName());
-        student.setEmail(studentDTO.getEmail());
-        student.setPassword(studentDTO.getPassword());
-        student.setRole(studentDTO.getRole());
-        student.setEnrollmentDate(Date.valueOf(LocalDate.now()));
+        Student student = GenericObjectMapper.map(studentDTO,Student.class);
         Student savedUser =  studentRepositry.save(student);
         return mapToDTO(savedUser);
-
-    }
-    private StudentDTO mapToDTO(Student student) {
-        StudentDTO studentDTO = new StudentDTO();
-        studentDTO.setId(student.getId());
-        studentDTO.setName(student.getName());
-        studentDTO.setEmail(student.getEmail());
-        studentDTO.setPassword(student.getPassword());
-        studentDTO.setRole(student.getRole());
-        studentDTO.setEnrollmentDate(student.getEnrollmentDate());
-        studentDTO.setCourseId(Optional.ofNullable(student.getCourse()).map(courses -> courses.stream()
-                                                                                                   .map(Course::getId)
-                                                                                                   .toList())
-                                                                                                   .orElse(Collections.emptyList()));
-        studentDTO.setAssignmentId(student.getAssignment().stream().map(Assignment::getId).toList());
-        studentDTO.setSubmissionId(student.getSubmission().stream().map(Submission::getId).toList());
-        studentDTO.setResultId(student.getResult().stream().map(Result::getId).toList());
-        return studentDTO;
     }
 
     public Page<StudentDTO> getAllStudent(int page, int size, String sortBy, String direction){
@@ -69,8 +41,7 @@ public class StudentService implements UserService{
     }
 
     public Student getStudent(long id) {
-        Optional<Student> byId = studentRepositry.findById(id);
-        return byId.orElse(new Student());
+        return studentRepositry.findById(id).orElse(null);
     }
 
     public Page<StudentDTO> getStudentByCourse(long id, int page, int size, String sortBy, String direction) {
@@ -108,4 +79,17 @@ public class StudentService implements UserService{
         else
             return null;
     }
+
+    private StudentDTO mapToDTO(Student student) {
+        StudentDTO studentDTO = GenericObjectMapper.map(student,StudentDTO.class);
+        studentDTO.setCourseId(Optional.ofNullable(student.getCourse()).map(courses -> courses.stream()
+                                                                                                   .map(Course::getId)
+                                                                                                   .toList())
+                                                                                                   .orElse(Collections.emptyList()));
+        studentDTO.setAssignmentId(student.getAssignment().stream().map(Assignment::getId).toList());
+        studentDTO.setSubmissionId(student.getSubmission().stream().map(Submission::getId).toList());
+        studentDTO.setResultId(student.getResult().stream().map(Result::getId).toList());
+        return studentDTO;
+    }
+
 }

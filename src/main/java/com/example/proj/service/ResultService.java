@@ -1,19 +1,15 @@
 package com.example.proj.service;
 
 import com.example.proj.dto.ResultDTO;
-import com.example.proj.dto.ResultDTO;
-import com.example.proj.model.Course;
 import com.example.proj.model.Result;
 import com.example.proj.repositry.ResultRepositry;
+import com.example.proj.utils.GenericObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ResultService {
@@ -36,15 +32,8 @@ public class ResultService {
 //        return mapToDTO(saved);
 //    }
 
-    public Optional<ResultDTO> updateResult(long id, ResultDTO resultDTO) {
-        Optional<Result> result = resultRepositry.findById(id);
-        if(result.isPresent()){
-            Result recieved = result.get();
-            recieved.setMarksObtained(resultDTO.getMarksObtained());
-            return Optional.of(mapToDTO(recieved));
-        }
-        else
-            return Optional.empty();
+    public ResultDTO updateResult(long id, ResultDTO resultDTO) {
+        return  resultRepositry.findById(id).map(this::mapToDTO).orElse(null);
     }
 
     public boolean deleteResult(long id) {
@@ -57,16 +46,6 @@ public class ResultService {
             return false;
     }
 
-
-    private ResultDTO mapToDTO(Result result) {
-        ResultDTO resultDTO =new ResultDTO();
-        resultDTO.setId(result.getId());
-        resultDTO.setExamId(result.getExam().getId());
-        resultDTO.setStudentId(result.getStudent().getId());
-        resultDTO.setMarksObtained(result.getMarksObtained());
-        return resultDTO;
-    }
-
     public Page<ResultDTO> getResultByStudent(long id,int page, int size, String sortBy, String direction) {
         Sort.Direction sortDirection = direction.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Sort sort = Sort.by(sortDirection, sortBy);  // Multiple fields can be added here
@@ -77,4 +56,12 @@ public class ResultService {
     public ResultDTO getResultByExam(long id) {
         return mapToDTO(resultRepositry.getResultByExamId(id));
     }
+
+    private ResultDTO mapToDTO(Result result) {
+        ResultDTO resultDTO = GenericObjectMapper.map(result,ResultDTO.class);
+        resultDTO.setExamId(result.getExam().getId());
+        resultDTO.setStudentId(result.getStudent().getId());
+        return resultDTO;
+    }
+
 }

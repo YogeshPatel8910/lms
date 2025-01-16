@@ -36,21 +36,21 @@ public class SubmissionController {
     }
 
     @PutMapping("/instructor/{id}")
-    public ResponseEntity<Optional<SubmissionDTO>> updateSubmission(@PathVariable(name = "id") long id, @RequestBody SubmissionDTO submissionDTO) {
-        Optional<SubmissionDTO> updateSubmission = submissionService.updateSubmission(id, submissionDTO);
-        if (updateSubmission.isPresent())
+    public ResponseEntity<SubmissionDTO> updateSubmission(@PathVariable(name = "id") long id, @RequestBody SubmissionDTO submissionDTO) {
+        SubmissionDTO updateSubmission = submissionService.updateSubmission(id, submissionDTO);
+        if (updateSubmission!=null)
             return new ResponseEntity<>(updateSubmission, HttpStatus.OK);
         else
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/admin/{id}")
-    public ResponseEntity<HttpStatus> deleteSubmission(@PathVariable(name = "id") long id) {
-        boolean isDeleted = submissionService.deleteSubmission(id);
-        if (isDeleted) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+//    @DeleteMapping("/admin/{id}")
+//    public ResponseEntity<HttpStatus> deleteSubmission(@PathVariable(name = "id") long id) {
+//        boolean isDeleted = submissionService.deleteSubmission(id);
+//        if (isDeleted) {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        } else
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//    }
 
 }

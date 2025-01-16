@@ -49,8 +49,7 @@ public class InstructorController {
 //  instructor -- get
     @GetMapping("/{id}")
     public ResponseEntity<InstructorDTO> getInstructorById(@PathVariable(name = "id") long id){
-        Optional<InstructorDTO> instructor = Optional.ofNullable(instructorService.getInstructorById(id));
-        return new ResponseEntity<>(instructor.get(),HttpStatus.OK);
+        return new ResponseEntity<>(instructorService.getInstructorById(id),HttpStatus.OK);
     }
 
 //  course -- getAll
@@ -66,18 +65,13 @@ public class InstructorController {
 //  course -- get
     @GetMapping("/{instructorId}/course/{id}")
     public ResponseEntity<CourseDTO> getCourseById(@PathVariable(name = "id") long id){
-        Optional<CourseDTO> course = Optional.ofNullable(courseService.getCourseById(id));
-        return new ResponseEntity<>(course.get(),HttpStatus.OK);
+        return new ResponseEntity<>(courseService.getCourseById(id),HttpStatus.OK);
     }
 
 //  Course -- create
     @PostMapping("/{id}/course")
     public ResponseEntity<CourseDTO> createCourse(@PathVariable(name = "id") long id, @RequestBody CourseDTO courseDTO) {
-        CourseDTO savedCourse = courseService.createCourse(id, courseDTO);
-        if (savedCourse == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        else
-            return new ResponseEntity<>(savedCourse, HttpStatus.CREATED);
+        return new ResponseEntity<>(courseService.createCourse(id, courseDTO),HttpStatus.OK);
     }
 
 //  Course -- update
@@ -87,7 +81,7 @@ public class InstructorController {
     }
 
 //  lesson -- getAll
-    @GetMapping("/{instructorId}/course/{id}/lessons")
+    @GetMapping("/{instructorId}/course/{id}/lesson")
     public ResponseEntity<Page<LessonDTO>> getAllLesson(@RequestParam(name = "page",required = false,defaultValue = "0")int page,
                                                         @RequestParam(name = "size",required = false,defaultValue = "10")int size,
                                                         @RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
@@ -105,21 +99,13 @@ public class InstructorController {
 //  lesson -- create
     @PostMapping("/{instructorId}/course/{id}/lesson")
     public ResponseEntity<LessonDTO> createLesson(@PathVariable(name = "id") long id, @RequestBody LessonDTO lessonDTO) {
-            LessonDTO savedLesson = lessonService.createLesson(id, lessonDTO);
-            if (savedLesson == null)
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            else
-                return new ResponseEntity<>(savedLesson, HttpStatus.CREATED);
+            return new ResponseEntity<>(lessonService.createLesson(id, lessonDTO),HttpStatus.OK);
     }
 
 //  lesson -- update
     @PutMapping("/{instructorId}/course/{courseId}/lesson/{id}")
-    public ResponseEntity<Optional<LessonDTO>> updateLesson(@PathVariable(name = "id") long id, @RequestBody LessonDTO lessonDTO) {
-        Optional<LessonDTO> updateLesson = lessonService.updateLesson(id, lessonDTO);
-        if (updateLesson.isPresent())
-            return new ResponseEntity<>(updateLesson, HttpStatus.OK);
-        else
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    public ResponseEntity<LessonDTO> updateLesson(@PathVariable(name = "id") long id, @RequestBody LessonDTO lessonDTO) {
+        return new ResponseEntity<>(lessonService.updateLesson(id, lessonDTO),HttpStatus.OK);
     }
 
 //  lesson -- delete
@@ -145,21 +131,20 @@ public class InstructorController {
 //   exam -- create
     @PostMapping("/{instructorId}/course/{id}/exam")
     public ResponseEntity<ExamDTO> createExam(@PathVariable(name = "id") long id, @RequestBody ExamDTO examDTO) {
-        ExamDTO savedExam = examService.createExam(id, examDTO);
-        if (savedExam == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        else
-            return new ResponseEntity<>(savedExam, HttpStatus.CREATED);
+        return new ResponseEntity<>(examService.createExam(id, examDTO),HttpStatus.OK);
     }
+
+//  exam -- get
+    @GetMapping("/{instructorId}/course/{courseId}/exam/{id}")
+    public ResponseEntity<ExamDTO> getExamById(@PathVariable(name = "id")long id){
+        return new ResponseEntity<>(examService.getExamById(id),HttpStatus.OK);
+    }
+
 
 //  exam -- update
     @PutMapping("/{instructorId}/course/{courseId}/exam/{id}")
-    public ResponseEntity<Optional<ExamDTO>> updateExam(@PathVariable(name = "id") long id, @RequestBody ExamDTO examDTO) {
-        Optional<ExamDTO> updateExam = examService.updateExam(id, examDTO);
-        if (updateExam.isPresent())
-            return new ResponseEntity<>(updateExam, HttpStatus.OK);
-        else
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    public ResponseEntity<ExamDTO> updateExam(@PathVariable(name = "id") long id, @RequestBody ExamDTO examDTO) {
+        return new ResponseEntity<>(examService.updateExam(id, examDTO),HttpStatus.OK);
     }
 
 //  exam -- delete
@@ -185,27 +170,19 @@ public class InstructorController {
 //  assignment -- getAssignmentById
     @GetMapping("/{instructorId}/course/{courseId}/assignments/{id}")
     public ResponseEntity<AssignmentDTO> getAllAssignmentById(@PathVariable(name = "id") long id) {
-        return new ResponseEntity<>(assignmentService.getAssignmentByid(id), HttpStatus.OK);
+        return new ResponseEntity<>(assignmentService.getAssignmentById(id), HttpStatus.OK);
     }
 
 //  assignment -- create
     @PostMapping("/{instructorId}/course/{id}/assignment")
     public ResponseEntity<AssignmentDTO> createAssignment(@PathVariable(name = "id") long id, @RequestBody AssignmentDTO assignmentDTO) {
-        AssignmentDTO savedExam = assignmentService.createAssignment(id, assignmentDTO);
-        if (savedExam == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        else
-            return new ResponseEntity<>(savedExam, HttpStatus.CREATED);
+        return new ResponseEntity<>(assignmentService.createAssignment(id, assignmentDTO),HttpStatus.OK);
     }
 
 //  assignment -- update
     @PutMapping("/{instructorId}/course/{courseId}/assignment/{id}")
-    public ResponseEntity<Optional<AssignmentDTO>> updateAssignment(@PathVariable(name = "id") long id, @RequestBody AssignmentDTO assignmentDTO) {
-        Optional<AssignmentDTO> updateAssignment = assignmentService.updateAssignment(id, assignmentDTO);
-        if (updateAssignment.isPresent())
-            return new ResponseEntity<>(updateAssignment, HttpStatus.OK);
-        else
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    public ResponseEntity<AssignmentDTO> updateAssignment(@PathVariable(name = "id") long id, @RequestBody AssignmentDTO assignmentDTO) {
+        return new ResponseEntity<>(assignmentService.updateAssignment(id, assignmentDTO),HttpStatus.OK);
     }
 
 //  assignment -- delete
@@ -236,13 +213,20 @@ public class InstructorController {
 
 //  submission -- grade
     @PutMapping("/{instructorId}/course/{courseId}/assignment/{assignmentId}/submissions/{id}")
-    public ResponseEntity<Optional<SubmissionDTO>> gradeSubmission(@PathVariable(name = "id") long id, @RequestBody SubmissionDTO submissionDTO) {
-        Optional<SubmissionDTO> updateSubmission = submissionService.gradeSubmission(id, submissionDTO);
-        if (updateSubmission.isPresent())
-            return new ResponseEntity<>(updateSubmission, HttpStatus.OK);
-        else
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    public ResponseEntity<SubmissionDTO> gradeSubmission(@PathVariable(name = "id") long id, @RequestBody SubmissionDTO submissionDTO) {
+        return new ResponseEntity<>(submissionService.gradeSubmission(id, submissionDTO),HttpStatus.OK);
     }
+
+//  submission -- delete
+    @DeleteMapping("/{instructorId}/course/{courseId}/assignment/{assignmentId}/submissions/{id}")
+    public ResponseEntity<HttpStatus> deleteSubmission(@PathVariable(name = "id") long id) {
+        boolean isDeleted = submissionService.deleteSubmission(id);
+        if (isDeleted) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
 
 //  student -- getAll
     @GetMapping("/{instructorId}/course/{id}/students")

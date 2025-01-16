@@ -1,11 +1,10 @@
 package com.example.proj.dto;
 
 import com.example.proj.model.ERole;
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
-import org.springframework.hateoas.RepresentationModel;
-
-import java.lang.reflect.Type;
 
 @Data
 @JsonTypeInfo(

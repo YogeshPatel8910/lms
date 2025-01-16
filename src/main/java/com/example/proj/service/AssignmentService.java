@@ -1,17 +1,18 @@
 package com.example.proj.service;
 
 import com.example.proj.dto.AssignmentDTO;
-import com.example.proj.dto.ExamDTO;
-import com.example.proj.model.*;
+import com.example.proj.model.Assignment;
+import com.example.proj.model.Course;
+import com.example.proj.model.Student;
+import com.example.proj.model.Submission;
 import com.example.proj.repositry.AssignmentRepositry;
+import com.example.proj.utils.GenericObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class AssignmentService {
@@ -22,8 +23,7 @@ public class AssignmentService {
     @Autowired
     private CourseService courseService;
 
-
-    public AssignmentDTO getAssignmentByid(long id) {
+    public AssignmentDTO getAssignmentById(long id) {
         return assignmentRepositry.findById(id).map(this::mapToDTO).orElse(null);
     }
     public Assignment getAssignment(long id){
@@ -37,40 +37,24 @@ public class AssignmentService {
         return assignmentRepositry.findAllByCourseId(id,pageable).map(this::mapToDTO);
     }
 
-    private AssignmentDTO mapToDTO(Assignment assignment) {
-        AssignmentDTO assignmentDTO = new AssignmentDTO();
-        assignmentDTO.setId(assignment.getId());
-        assignmentDTO.setTitle(assignment.getTitle());
-        assignmentDTO.setDescription(assignment.getDescription());
-        assignmentDTO.setDeadline(assignment.getDeadline());
-        assignmentDTO.setCourseId(assignment.getCourse().getId());
-        assignmentDTO.setSubmissionId(assignment.getSubmission().stream().map(Submission::getId).toList());
-        assignmentDTO.setStudentId(assignment.getStudent().stream().map(Student::getId).toList());
-        return assignmentDTO;
-    }
-
     public AssignmentDTO createAssignment(long id, AssignmentDTO assignmentDTO) {
         Course course = courseService.getCourse(id);
-        Assignment assignment = new Assignment();
-        assignment.setTitle(assignmentDTO.getTitle());
-        assignment.setDescription(assignmentDTO.getDescription());
-        assignment.setDeadline(assignmentDTO.getDeadline());
+        Assignment assignment = GenericObjectMapper.map(assignmentDTO,Assignment.class);
         assignment.setCourse(course);
         Assignment savedAssignment = assignmentRepositry.save(assignment);
         return mapToDTO(savedAssignment);
     }
 
-    public Optional<AssignmentDTO> updateAssignment(long id, AssignmentDTO assignmentDTO) {
-        Optional<Assignment> assignment = assignmentRepositry.findById(id);
-        if(assignment.isPresent()){
-            Assignment recieved = assignment.get();
-            recieved.setTitle(assignmentDTO.getTitle());
-            recieved.setDescription(assignmentDTO.getDescription());
-            recieved.setDeadline(assignmentDTO.getDeadline());
-            return Optional.of(mapToDTO(recieved));
+    public AssignmentDTO updateAssignment(long id, AssignmentDTO assignmentDTO) {
+        Assignment assignment = assignmentRepositry.findById(id).orElse(null);
+        if(assignment!=null){
+            assignment.setTitle(assignmentDTO.getTitle());
+            assignment.setDescription(assignmentDTO.getDescription());
+            assignment.setDeadline(assignmentDTO.getDeadline());
+            return mapToDTO(assignment);
         }
         else
-            return Optional.empty();
+            return null;
     }
 
     public boolean deleteAssignment(long id) {
@@ -89,4 +73,13 @@ public class AssignmentService {
         Pageable pageable = PageRequest.of(page, size, sort);
         return assignmentRepositry.findAllByStudentId(id,pageable).map(this::mapToDTO);
     }
+
+    private AssignmentDTO mapToDTO(Assignment assignment) {
+        AssignmentDTO assignmentDTO = GenericObjectMapper.map(assignment,AssignmentDTO.class);
+        assignmentDTO.setCourseId(assignment.getCourse().getId());
+        assignmentDTO.setSubmissionId(assignment.getSubmission().stream().map(Submission::getId).toList());
+        assignmentDTO.setStudentId(assignment.getStudent().stream().map(Student::getId).toList());
+        return assignmentDTO;
+    }
+
 }

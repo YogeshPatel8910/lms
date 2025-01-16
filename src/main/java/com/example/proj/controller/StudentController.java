@@ -64,8 +64,6 @@ public class StudentController {
         return new ResponseEntity<>(studentService.updateStudent(id,studentDTO), HttpStatus.OK);
     }
 
-//  student -- delete
-
 
 //  student -- allCourse
     @GetMapping("/{id}/enroll")
@@ -97,8 +95,7 @@ public class StudentController {
 //  course -- get
     @GetMapping("/{studentId}/course/{id}")
     public ResponseEntity<CourseDTO> getCourseById(@PathVariable(name = "id") long id){
-        Optional<CourseDTO> course = Optional.ofNullable(courseService.getCourseById(id));
-        return new ResponseEntity<>(course.get(),HttpStatus.OK);
+        return new ResponseEntity<>(courseService.getCourseById(id),HttpStatus.OK);
     }
 
 //  lesson -- getAll
@@ -159,7 +156,7 @@ public class StudentController {
 //  assignment -- getAsssignmentById
     @GetMapping(value = {"/{studentId}/course/{courseId}/assignments/{id}","/{studentId}/assignments/{id}"})
     public ResponseEntity<AssignmentDTO> getAllAssignmentById(@PathVariable(name = "id") long id) {
-        return new ResponseEntity<>(assignmentService.getAssignmentByid(id), HttpStatus.OK);
+        return new ResponseEntity<>(assignmentService.getAssignmentById(id), HttpStatus.OK);
     }
 
 
@@ -187,23 +184,15 @@ public class StudentController {
                          "/{studentId}/submission/{id}"})
     public ResponseEntity<SubmissionDTO> createSubmission(@PathVariable(name = "id")long id,
                                                        @RequestBody SubmissionDTO submissionDTO){
-        SubmissionDTO savedSubmission = submissionService.createSubmission(id,submissionDTO);
-        if(savedSubmission == null)
-            return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
-        else
-            return new ResponseEntity<>(savedSubmission,HttpStatus.CREATED);
+        return new ResponseEntity<>(submissionService.createSubmission(id,submissionDTO),HttpStatus.OK);
     }
 
 //  submission -- update
     @PutMapping(value = {"/{studentId}/course/{courseId}/assignment/{assignmentId}/submissions/{id}",
                          "/{studentId}/assignment/{assignmentId}/submission/{id}",
                          "/{studentId}/submission/{id}"})
-    public ResponseEntity<Optional<SubmissionDTO>> updateAssignment(@PathVariable(name = "id") long id, @RequestBody SubmissionDTO submissionDTO) {
-        Optional<SubmissionDTO> updateSubmission = submissionService.updateSubmission(id, submissionDTO);
-        if (updateSubmission.isPresent())
-            return new ResponseEntity<>(updateSubmission, HttpStatus.OK);
-        else
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    public ResponseEntity<SubmissionDTO> updateAssignment(@PathVariable(name = "id") long id, @RequestBody SubmissionDTO submissionDTO) {
+        return new ResponseEntity<>(submissionService.updateSubmission(id, submissionDTO),HttpStatus.OK);
     }
 
 //  submission -- delete

@@ -1,7 +1,6 @@
 package com.example.proj.repositry;
 
 import com.example.proj.model.Result;
-import com.example.proj.service.ResultService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

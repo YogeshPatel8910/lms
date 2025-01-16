@@ -1,12 +1,9 @@
 package com.example.proj.service;
 
-import com.example.proj.dto.AssignmentDTO;
-import com.example.proj.dto.CategoryDTO;
 import com.example.proj.dto.CourseDTO;
 import com.example.proj.model.*;
 import com.example.proj.repositry.CourseRepositry;
-import com.example.proj.repositry.UserRepositry;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.proj.utils.GenericObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,8 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CourseService {
@@ -31,7 +26,6 @@ public class CourseService {
     @Autowired
     private CategoryService categoryService;
 
-
     public Page<CourseDTO> getAllCourse(int page, int size, String sortBy, String direction) {
         Sort.Direction sortDirection = direction.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Sort sort = Sort.by(sortDirection, sortBy);  // Multiple fields can be added here
@@ -40,8 +34,7 @@ public class CourseService {
     }
 
     public CourseDTO getCourseById(long id){
-        Optional<CourseDTO> byId=courseRepositry.findById(id).map(this::mapToDTO);
-        return byId.orElse(null);
+        return courseRepositry.findById(id).map(this::mapToDTO).orElse(null);
     }
 
     public Course getCourse(long id) {
@@ -56,14 +49,12 @@ public class CourseService {
     }
 
     public CourseDTO createCourse(long id, CourseDTO courseDTO) {
-        Course course = new Course();
+        Course course = GenericObjectMapper.map(courseDTO,Course.class);
         Instructor instructor = instructorService.getInstructor(id);
         Category category = categoryService.getCategoryById(courseDTO.getCategoryId());
         if(instructor==null||category==null){
             return null;
         }
-        course.setName(courseDTO.getName());
-        course.setDescription(courseDTO.getDescription());
         course.setCreatedDate(Date.valueOf(LocalDate.now()));
         course.setInstructor(instructor);
         course.setCategory(category);
@@ -92,29 +83,23 @@ public class CourseService {
             return false;
     }
 
-
-    private CourseDTO mapToDTO(Course course) {
-        CourseDTO courseDTO = new CourseDTO();
-        courseDTO.setId(course.getId());
-        courseDTO.setName(course.getName());
-        courseDTO.setDescription(course.getDescription());
-        courseDTO.setCreatedDate(course.getCreatedDate());
-        courseDTO.setLessonId(course.getLesson().stream().map(Lesson::getId).toList());
-        courseDTO.setAssignment(course.getAssignment());
-        courseDTO.setExam(course.getExam());
-        courseDTO.setStudent(course.getStudent());
-        courseDTO.setInstructorId(course.getInstructor().getId());
-        courseDTO.setCategoryId(course.getCategory().getId());
-        return courseDTO;
-
-    }
-
-
     public Page<CourseDTO> getCourseByStudent(long id,int page, int size, String sortBy, String direction) {
         Sort.Direction sortDirection = direction.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Sort sort = Sort.by(sortDirection, sortBy);  // Multiple fields can be added here
         Pageable pageable = PageRequest.of(page, size, sort);
         return courseRepositry.findAllByStudentId(id,pageable).map(this::mapToDTO);
+    }
+
+    private CourseDTO mapToDTO(Course course) {
+        CourseDTO courseDTO = GenericObjectMapper.map(course,CourseDTO.class);
+        courseDTO.setLessonId(course.getLesson().stream().map(Lesson::getId).toList());
+        courseDTO.setAssignmentId(course.getAssignment().stream().map(Assignment::getId).toList());
+        courseDTO.setExamId(course.getExam().stream().map(Exam::getId).toList());
+        courseDTO.setStudentId(course.getStudent().stream().map(Student::getId).toList());
+        courseDTO.setInstructorId(course.getInstructor().getId());
+        courseDTO.setCategoryId(course.getCategory().getId());
+        return courseDTO;
+
     }
 
 }

@@ -2,9 +2,8 @@ package com.example.proj.service;
 
 import com.example.proj.dto.CategoryDTO;
 import com.example.proj.model.Category;
-import com.example.proj.model.Instructor;
-import com.example.proj.model.User;
 import com.example.proj.repositry.CategoryRepositry;
+import com.example.proj.utils.GenericObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,28 +26,25 @@ public class CategoryService {
     }
 
     public CategoryDTO createCategory(CategoryDTO categoryDTO){
-        Category category = new Category();
-        category.setName(categoryDTO.getName());
-        category.setDescription(categoryDTO.getDescription());
+        Category category = GenericObjectMapper.map(categoryDTO,Category.class);
         Category newCategory = categoryRepositry.save(category);
         return mapToDTO(newCategory);
     }
 
-    public Optional<CategoryDTO> updateCategory(long id,CategoryDTO categoryDTO){
-        Optional<Category> category = categoryRepositry.findById(id);
-        if(category.isPresent()) {
-            Category recieved = category.get();
-            recieved.setName(categoryDTO.getName());
-            recieved.setDescription(categoryDTO.getName());
-            return Optional.of(mapToDTO(recieved));
+    public CategoryDTO updateCategory(long id,CategoryDTO categoryDTO){
+        Category category = categoryRepositry.findById(id).orElse(null);
+        if(category != null) {
+            category.setName(categoryDTO.getName());
+            category.setDescription(categoryDTO.getName());
+            return mapToDTO(category);
         }
         else
-            return Optional.empty();
+            return null;
 
     }
     public boolean deleteCategory(long id){
-        Optional<Category> category = categoryRepositry.findById(id);
-        if(category.isPresent()) {
+        Category category = categoryRepositry.findById(id).orElse(null);
+        if(category!=null) {
             categoryRepositry.deleteById(id);
             return true;
         }
@@ -56,12 +52,7 @@ public class CategoryService {
             return false;
     }
 
-
     private CategoryDTO mapToDTO(Category category) {
-        CategoryDTO categoryDTO = new CategoryDTO();
-        categoryDTO.setId(category.getId());
-        categoryDTO.setName(category.getName());
-        categoryDTO.setDescription(category.getDescription());
-        return categoryDTO;
+        return GenericObjectMapper.map(category,CategoryDTO.class);
     }
 }

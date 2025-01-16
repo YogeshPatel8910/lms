@@ -30,14 +30,14 @@ public class CourseController {
     }
 
 
-    @DeleteMapping("admin/{id}")
-    public ResponseEntity<HttpStatus> deleteCourse(@PathVariable(name = "id") long id, @RequestBody CourseDTO courseDTO) {
-        boolean isDeleted = courseService.deleteCourse(id);
-        if (isDeleted) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+//    @DeleteMapping("admin/{id}")
+//    public ResponseEntity<HttpStatus> deleteCourse(@PathVariable(name = "id") long id, @RequestBody CourseDTO courseDTO) {
+//        boolean isDeleted = courseService.deleteCourse(id);
+//        if (isDeleted) {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        } else
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//    }
 
 
 }

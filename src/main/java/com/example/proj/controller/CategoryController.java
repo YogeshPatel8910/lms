@@ -31,12 +31,7 @@ public class CategoryController {
 
     @PutMapping("/admin/{id}")
     public ResponseEntity<CategoryDTO> updateCategory(@PathVariable(name = "id") long id, @RequestBody CategoryDTO categoryDTO) {
-        Optional<CategoryDTO> newCategory = categoryService.updateCategory(id, categoryDTO);
-        if (newCategory.isPresent()) {
-            return new ResponseEntity<>(newCategory.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(categoryService.updateCategory(id, categoryDTO),HttpStatus.OK);
     }
 
     @DeleteMapping("/admin/{id}")

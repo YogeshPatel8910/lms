@@ -1,9 +1,5 @@
 package com.example.proj.dto;
 
-import com.example.proj.model.*;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
 import lombok.Data;
 
 import java.sql.Date;
@@ -23,11 +19,11 @@ public class CourseDTO {
 
     private List<Long> lessonId;
 
-    private List<Assignment> assignment;
+    private List<Long> assignmentId;
 
-    private List<Exam> exam;
+    private List<Long> examId;
 
-    private List<Student> student;
+    private List<Long> studentId;
 
     private long instructorId;
 
