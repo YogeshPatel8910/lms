@@ -3,8 +3,7 @@ package com.example.proj.service;
 import com.example.proj.controller.StudentController;
 import com.example.proj.dto.StudentDTO;
 import com.example.proj.dto.UserDTO;
-import com.example.proj.model.Course;
-import com.example.proj.model.Student;
+import com.example.proj.model.*;
 import com.example.proj.repositry.StudentRepositry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,7 +51,13 @@ public class StudentService implements UserService{
         studentDTO.setPassword(student.getPassword());
         studentDTO.setRole(student.getRole());
         studentDTO.setEnrollmentDate(student.getEnrollmentDate());
-        studentDTO.setCourseId(student.getCourse().stream().map(Course::getId).toList());
+        studentDTO.setCourseId(Optional.ofNullable(student.getCourse()).map(courses -> courses.stream()
+                                                                                                   .map(Course::getId)
+                                                                                                   .toList())
+                                                                                                   .orElse(Collections.emptyList()));
+        studentDTO.setAssignmentId(student.getAssignment().stream().map(Assignment::getId).toList());
+        studentDTO.setSubmissionId(student.getSubmission().stream().map(Submission::getId).toList());
+        studentDTO.setResultId(student.getResult().stream().map(Result::getId).toList());
         return studentDTO;
     }
 
@@ -64,7 +70,7 @@ public class StudentService implements UserService{
 
     public Student getStudent(long id) {
         Optional<Student> byId = studentRepositry.findById(id);
-        return byId.orElse(null);
+        return byId.orElse(new Student());
     }
 
     public Page<StudentDTO> getStudentByCourse(long id, int page, int size, String sortBy, String direction) {

@@ -18,8 +18,7 @@ public class ResultController {
 
     @GetMapping("/student/{id}")
     public ResponseEntity<ResultDTO> getAllResult(@PathVariable(name = "id") long id) {
-        Optional<ResultDTO> results = resultService.getResultById(id);
-            return new ResponseEntity<>(results.get(),HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(resultService.getResultById(id),HttpStatus.NO_CONTENT);
     }
 
 //    @PostMapping("/instructor/{id}")

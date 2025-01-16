@@ -45,11 +45,11 @@ public class AdminService implements UserService{
         userDTO.setRole(user.getRole());
         return userDTO;
     }
-    public Page<User> getUsers(int page, int size,String sortBy,String direction){
+    public Page<UserDTO> getUsers(int page, int size,String sortBy,String direction){
         Sort.Direction sortDirection = direction.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Sort sort = Sort.by(sortDirection, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
-        return userRepositry.findAll(pageable);
+        return userRepositry.findAll(pageable).map(this::mapToDTO);
     }
 
     public boolean deleteUser(long id){

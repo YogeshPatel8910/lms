@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,13 +40,24 @@ public class SubmissionService {
 
     public SubmissionDTO createSubmission(long id, SubmissionDTO submissionDTO) {
         Student student = studentService.getStudent(id);
-        Assignment assignment = assignmentService.getAssignmentByid(id);
+        Assignment assignment = assignmentService.getAssignment(id);
         Submission submission = new Submission();
         submission.setStudent(student);
         submission.setAssignment(assignment);
         submission.setSubmissionFile(submissionDTO.getSubmissionFile());
         Submission savedSubmission = submissionRepositry.save(submission);
         return mapToDTO(savedSubmission);
+    }
+
+    public Optional<SubmissionDTO> gradeSubmission(long id, SubmissionDTO submissionDTO) {
+        Optional<Submission> submission = submissionRepositry.findById(id);
+        if(submission.isPresent()){
+            Submission recieved = submission.get();
+            recieved.setGrade(submissionDTO.getGrade());
+            return Optional.of(mapToDTO(recieved));
+        }
+        else
+            return Optional.empty();
     }
 
     public Optional<SubmissionDTO> updateSubmission(long id, SubmissionDTO submissionDTO) {
@@ -84,5 +96,9 @@ public class SubmissionService {
         Sort sort = Sort.by(sortDirection, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
         return submissionRepositry.findAllByAssignmentId(id,pageable).map(this::mapToDTO);
+    }
+
+    public SubmissionDTO getSubmissionById(long id) {
+        return submissionRepositry.findById(id).map(this::mapToDTO).orElse(null);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.proj.service;
 
+import com.example.proj.dto.AssignmentDTO;
 import com.example.proj.dto.CategoryDTO;
 import com.example.proj.dto.CourseDTO;
 import com.example.proj.model.*;
@@ -92,9 +93,6 @@ public class CourseService {
     }
 
 
-    private List<CourseDTO> map(List<Course> courses) {
-        return courses.stream().map(this::mapToDTO).toList();
-    }
     private CourseDTO mapToDTO(Course course) {
         CourseDTO courseDTO = new CourseDTO();
         courseDTO.setId(course.getId());
@@ -108,7 +106,6 @@ public class CourseService {
         courseDTO.setInstructorId(course.getInstructor().getId());
         courseDTO.setCategoryId(course.getCategory().getId());
         return courseDTO;
-//        ObjectMapper
 
     }
 
@@ -119,4 +116,5 @@ public class CourseService {
         Pageable pageable = PageRequest.of(page, size, sort);
         return courseRepositry.findAllByStudentId(id,pageable).map(this::mapToDTO);
     }
+
 }

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -82,5 +83,9 @@ public class LessonService {
         lessonDTO.setDuration(lesson.getDuration());
         lessonDTO.setCourseId(lesson.getCourse().getId());
         return lessonDTO;
+    }
+
+    public LessonDTO getLessonById(long id) {
+        return lessonRepositry.findById(id).map(this::mapToDTO).orElse(null);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.proj.controller;
 
+import com.example.proj.dto.UserDTO;
 import com.example.proj.model.User;
 import com.example.proj.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +18,10 @@ public class AdminController {
 
 
     @GetMapping
-    public ResponseEntity<Page<User>> getAllUsers(@RequestParam(name = "page",required = false,defaultValue = "0")int page,
-                                                  @RequestParam(name = "size",required = false,defaultValue = "10")int size,
-                                                  @RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
-                                                  @RequestParam(name = "direction", defaultValue = "asc") String direction) {
+    public ResponseEntity<Page<UserDTO>> getAllUsers(@RequestParam(name = "page",required = false,defaultValue = "0")int page,
+                                                     @RequestParam(name = "size",required = false,defaultValue = "10")int size,
+                                                     @RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
+                                                     @RequestParam(name = "direction", defaultValue = "asc") String direction) {
         return new ResponseEntity<>(adminService.getUsers(page, size , sortBy , direction), HttpStatus.OK);
     }
 

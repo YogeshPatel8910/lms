@@ -23,9 +23,11 @@ public class AssignmentService {
     private CourseService courseService;
 
 
-    public Assignment getAssignmentByid(long id) {
-        Optional<Assignment> byId = assignmentRepositry.findById(id);
-        return byId.orElse(null);
+    public AssignmentDTO getAssignmentByid(long id) {
+        return assignmentRepositry.findById(id).map(this::mapToDTO).orElse(null);
+    }
+    public Assignment getAssignment(long id){
+        return assignmentRepositry.findById(id).orElse(null);
     }
 
     public Page<AssignmentDTO> getAllAssignmentByCourse(long id, int page, int size, String sortBy, String direction) {
@@ -79,5 +81,12 @@ public class AssignmentService {
         }
         else
             return false;
+    }
+
+    public Page<AssignmentDTO> getAssignmentByStudent(long id, int page, int size, String sortBy, String direction) {
+        Sort.Direction sortDirection = direction.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(sortDirection, sortBy);  // Multiple fields can be added here
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return assignmentRepositry.findAllByStudentId(id,pageable).map(this::mapToDTO);
     }
 }
