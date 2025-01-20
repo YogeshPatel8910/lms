@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.Optional;
 
 @Service
 public class CourseService {
@@ -92,10 +94,18 @@ public class CourseService {
 
     private CourseDTO mapToDTO(Course course) {
         CourseDTO courseDTO = GenericObjectMapper.map(course,CourseDTO.class);
-        courseDTO.setLessonId(course.getLesson().stream().map(Lesson::getId).toList());
-        courseDTO.setAssignmentId(course.getAssignment().stream().map(Assignment::getId).toList());
-        courseDTO.setExamId(course.getExam().stream().map(Exam::getId).toList());
-        courseDTO.setStudentId(course.getStudent().stream().map(Student::getId).toList());
+        courseDTO.setLessonId(Optional.ofNullable(course.getLesson())
+                .map(lessons -> lessons.stream().map(Lesson::getId).toList())
+                .orElse(Collections.emptyList()));
+        courseDTO.setAssignmentId(Optional.ofNullable(course.getAssignment())
+                .map(assignments -> assignments.stream().map(Assignment::getId).toList())
+                .orElse(Collections.emptyList()));
+        courseDTO.setExamId(Optional.ofNullable(course.getExam())
+                .map(exams -> exams.stream().map(Exam::getId).toList())
+                .orElse(Collections.emptyList()));
+        courseDTO.setStudentId(Optional.ofNullable(course.getStudent())
+                .map(students -> students.stream().map(Student::getId).toList())
+                .orElse(Collections.emptyList()));
         courseDTO.setInstructorId(course.getInstructor().getId());
         courseDTO.setCategoryId(course.getCategory().getId());
         return courseDTO;

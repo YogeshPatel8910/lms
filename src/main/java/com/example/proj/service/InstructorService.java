@@ -6,6 +6,7 @@ import com.example.proj.model.Course;
 import com.example.proj.model.Instructor;
 import com.example.proj.repositry.InstructorRepositry;
 import com.example.proj.utils.GenericObjectMapper;
+import org.hibernate.mapping.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.Optional;
 
 @Service("instructorService")
 public class InstructorService implements UserService{
@@ -48,7 +51,9 @@ public class InstructorService implements UserService{
 
     private InstructorDTO mapToDTO(Instructor instructor) {
         InstructorDTO instructorDTO = GenericObjectMapper.map(instructor,InstructorDTO.class);
-        instructorDTO.setCoursesId(instructor.getCourse().stream().map(Course::getId).toList());
+        instructorDTO.setCoursesId(Optional.ofNullable(instructor.getCourse())
+                .map(courses -> courses.stream().map(Course::getId).toList())
+                .orElse(Collections.emptyList()));
         return instructorDTO;
     }
 

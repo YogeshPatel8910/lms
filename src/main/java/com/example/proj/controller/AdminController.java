@@ -101,7 +101,7 @@ public class AdminController {
         return new ResponseEntity<>(courseService.getCourseById(id),HttpStatus.OK);
     }
 
-//  category -- delete
+//  course -- delete
     @DeleteMapping("/course/{id}")
     public ResponseEntity<HttpStatus> deleteCourse(@PathVariable(name = "id") long id, @RequestBody CourseDTO courseDTO) {
         boolean isDeleted = courseService.deleteCourse(id);

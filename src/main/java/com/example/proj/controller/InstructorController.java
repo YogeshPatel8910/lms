@@ -53,7 +53,7 @@ public class InstructorController {
     }
 
 //  course -- getAll
-    @GetMapping("/{id}/courses")
+    @GetMapping("/{id}/course")
     public ResponseEntity<Page<CourseDTO>> getCourseByInstructor(@PathVariable(name = "id") long id,
                                                                  @RequestParam(name = "page",required = false,defaultValue = "0")int page,
                                                                  @RequestParam(name = "size",required = false,defaultValue = "10")int size,

@@ -12,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +31,7 @@ public class StudentService implements UserService{
     public UserDTO createUser(UserDTO userDTO) {
         StudentDTO studentDTO = (StudentDTO) userDTO;
         Student student = GenericObjectMapper.map(studentDTO,Student.class);
+        student.setEnrollmentDate(Date.valueOf(LocalDate.now()));
         Student savedUser =  studentRepositry.save(student);
         return mapToDTO(savedUser);
     }
@@ -82,13 +85,18 @@ public class StudentService implements UserService{
 
     private StudentDTO mapToDTO(Student student) {
         StudentDTO studentDTO = GenericObjectMapper.map(student,StudentDTO.class);
-        studentDTO.setCourseId(Optional.ofNullable(student.getCourse()).map(courses -> courses.stream()
-                                                                                                   .map(Course::getId)
-                                                                                                   .toList())
-                                                                                                   .orElse(Collections.emptyList()));
-        studentDTO.setAssignmentId(student.getAssignment().stream().map(Assignment::getId).toList());
-        studentDTO.setSubmissionId(student.getSubmission().stream().map(Submission::getId).toList());
-        studentDTO.setResultId(student.getResult().stream().map(Result::getId).toList());
+        studentDTO.setCourseId(Optional.ofNullable(student.getCourse())
+                .map(courses -> courses.stream().map(Course::getId).toList())
+                .orElse(Collections.emptyList()));
+        studentDTO.setAssignmentId(Optional.ofNullable(student.getAssignment())
+                .map(assignments -> assignments.stream().map(Assignment::getId).toList())
+                .orElse(Collections.emptyList()));
+        studentDTO.setSubmissionId(Optional.ofNullable(student.getSubmission())
+                .map(submissions -> submissions.stream().map(Submission::getId).toList())
+                .orElse(Collections.emptyList()));
+        studentDTO.setResultId(Optional.ofNullable(student.getResult())
+                .map(results -> results.stream().map(Result::getId).toList())
+                .orElse(Collections.emptyList()));
         return studentDTO;
     }
 
